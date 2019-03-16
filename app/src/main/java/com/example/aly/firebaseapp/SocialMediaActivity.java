@@ -113,6 +113,13 @@ public class SocialMediaActivity extends AppCompatActivity implements AdapterVie
                 logout();
 
                 break;
+
+            case R.id.viewPostsItem:
+
+                Intent intent = new Intent(this, ViewPostsActivity.class);
+                startActivity(intent);
+
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -290,9 +297,17 @@ public class SocialMediaActivity extends AppCompatActivity implements AdapterVie
         dataMap.put("des", edtDescription.getText().toString());
 
         FirebaseDatabase.getInstance().getReference().child("my_users").child(uids.get(position))
-                .child("received_posts").push().setValue(dataMap);
-
-        Toast.makeText(SocialMediaActivity.this, "Post sent successful",
-                Toast.LENGTH_SHORT).show();
+                .child("received_posts").push().setValue(dataMap).addOnCompleteListener(new OnCompleteListener<Void>()
+        {
+            @Override
+            public void onComplete(@NonNull Task<Void> task)
+            {
+                if (task.isSuccessful())
+                {
+                    Toast.makeText(SocialMediaActivity.this, "Post sent successful",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }
